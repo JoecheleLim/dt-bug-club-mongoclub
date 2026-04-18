@@ -8,6 +8,12 @@ const app = express();
 app.use(cors({ origin: '*' }));
 app.use(express.json());
 
+// Log requests for debugging in Vercel dashboard
+app.use((req, res, next) => {
+  console.log(`${req.method} ${req.url}`);
+  next();
+});
+
 const dbPath = process.env.VERCEL ? '/tmp/database.sqlite' : path.join(__dirname, 'database.sqlite');
 
 const dbPromise = open({
@@ -36,9 +42,13 @@ async function ensureDb() {
   return db;
 }
 
-app.get('/api/health', (req, res) => res.json({ status: 'ok' }));
+// Support both /api/health and /health
+const healthHandler = (req, res) => res.json({ status: 'ok', env: process.env.VERCEL ? 'vercel' : 'local', time: new Date().toISOString() });
+app.get('/api/health', healthHandler);
+app.get('/health', healthHandler);
 
-app.get('/api/staff', async (req, res) => {
+// Staff endpoints
+app.get(['/api/staff', '/staff'], async (req, res) => {
   try {
     const db = await ensureDb();
     const staff = await db.all('SELECT * FROM staff');
@@ -49,7 +59,7 @@ app.get('/api/staff', async (req, res) => {
   }
 });
 
-app.post('/api/staff', async (req, res) => {
+app.post(['/api/staff', '/staff'], async (req, res) => {
   try {
     const { name, club } = req.body;
     const db = await ensureDb();
@@ -61,7 +71,7 @@ app.post('/api/staff', async (req, res) => {
   }
 });
 
-app.delete('/api/staff/:id', async (req, res) => {
+app.delete(['/api/staff/:id', '/staff/:id'], async (req, res) => {
   try {
     const db = await ensureDb();
     await db.run('DELETE FROM staff WHERE id = ?', [req.params.id]);
@@ -73,7 +83,7 @@ app.delete('/api/staff/:id', async (req, res) => {
   }
 });
 
-app.post('/api/records', async (req, res) => {
+app.post(['/api/records', '/records'], async (req, res) => {
   try {
     const { staff_id, month, hours, gifts } = req.body;
     const db = await ensureDb();
@@ -91,7 +101,7 @@ app.post('/api/records', async (req, res) => {
   }
 });
 
-app.get('/api/report/:month', async (req, res) => {
+app.get(['/api/report/:month', '/report/:month'], async (req, res) => {
   try {
     const { month } = req.params;
     const db = await ensureDb();
@@ -112,8 +122,6 @@ app.get('/api/report/:month', async (req, res) => {
     });
 
     const finalReport = [];
-    
-    // Calculate Aces overall (Top 3 by hours)
     const sortedAll = [...data].sort((a, b) => (b.hours || 0) - (a.hours || 0));
     const aceIds = new Set(sortedAll.slice(0, 3).filter(s => (s.hours || 0) > 0).map(s => s.id));
 
