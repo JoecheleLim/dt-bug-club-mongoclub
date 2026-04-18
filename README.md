@@ -17,7 +17,7 @@ The system automatically applies the following combined-club rules:
 | **Gifts** | RM 12/unit | 10% | Total units received from customers |
 
 ### The "Ace" Status
-"Aces" are the top 3 staff members chosen based on the highest hours worked in the previous month across **the entire club** (DT and Bug combined).
+"Aces" are the top 3 staff members chosen based on the highest hours worked in the previous month **within each respective club** (3 for DT and 3 for Bug).
 
 ---
 

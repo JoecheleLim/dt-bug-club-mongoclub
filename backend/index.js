@@ -103,37 +103,54 @@ app.get('/api/report/:month', async (req, res) => {
     `, [month]);
 
     const finalReport = [];
-    const sortedAll = [...data].sort((a, b) => (b.hours || 0) - (a.hours || 0));
-    const aceIds = new Set(sortedAll.slice(0, 3).filter(s => (s.hours || 0) > 0).map(s => s.id));
+    const clubs = { DT: [], Bug: [] };
 
+    // Group staff into their respective clubs
     data.forEach(staff => {
-      const hours = staff.hours || 0;
-      const gifts = staff.gifts || 0;
-      const giftValue = gifts * 12;
-      const isAce = aceIds.has(staff.id);
-      
-      let baseSalary, clubCut;
-      
-      if (isAce) {
-        baseSalary = hours * 14;
-        const taxableSalary = Math.max(0, baseSalary - (4 * hours));
-        clubCut = (0.25 * taxableSalary) + (0.10 * giftValue);
-      } else {
-        baseSalary = hours * 10;
-        clubCut = (0.20 * baseSalary) + (0.10 * giftValue);
+      const club = staff.club;
+      if (clubs[club]) {
+        clubs[club].push({
+          ...staff,
+          hours: staff.hours || 0,
+          gifts: staff.gifts || 0
+        });
       }
+    });
 
-      const finalSalary = (baseSalary + giftValue) - clubCut;
+    // Process each club to find its own Top 3 Aces
+    Object.keys(clubs).forEach(clubName => {
+      const staffInClub = clubs[clubName];
+      
+      // Sort by hours descending to find top performers in THIS club
+      staffInClub.sort((a, b) => b.hours - a.hours);
+      
+      staffInClub.forEach((staff, index) => {
+        const isAce = index < 3 && staff.hours > 0;
+        const hours = staff.hours;
+        const gifts = staff.gifts;
+        const giftValue = gifts * 12;
+        
+        let baseSalary, clubCut;
+        
+        if (isAce) {
+          baseSalary = hours * 14;
+          const taxableSalary = Math.max(0, baseSalary - (4 * hours));
+          clubCut = (0.25 * taxableSalary) + (0.10 * giftValue);
+        } else {
+          baseSalary = hours * 10;
+          clubCut = (0.20 * baseSalary) + (0.10 * giftValue);
+        }
 
-      finalReport.push({
-        ...staff,
-        hours,
-        gifts,
-        isAce,
-        baseSalary,
-        giftValue,
-        clubCut,
-        finalSalary
+        const finalSalary = (baseSalary + giftValue) - clubCut;
+
+        finalReport.push({
+          ...staff,
+          isAce,
+          baseSalary,
+          giftValue,
+          clubCut,
+          finalSalary
+        });
       });
     });
 

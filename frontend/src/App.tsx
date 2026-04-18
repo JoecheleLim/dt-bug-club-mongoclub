@@ -85,7 +85,9 @@ const Header = () => (
 const Footer = ({ report }: { report: any[] }) => {
   const dtCommission = report.filter(s => s.club === 'DT').reduce((acc, s) => acc + (s.clubCut || 0), 0);
   const bugCommission = report.filter(s => s.club === 'Bug').reduce((acc, s) => acc + (s.clubCut || 0), 0);
-  const topAces = report.filter(s => s.isAce).sort((a, b) => b.hours - a.hours).slice(0, 3);
+  
+  const dtAces = report.filter(s => s.club === 'DT' && s.isAce).sort((a, b) => b.hours - a.hours);
+  const bugAces = report.filter(s => s.club === 'Bug' && s.isAce).sort((a, b) => b.hours - a.hours);
 
   return (
     <footer className="h-10 bg-cyber-card border-t border-cyber-border flex items-center justify-between px-6 text-[10px] text-gray-500 uppercase tracking-widest">
@@ -101,12 +103,23 @@ const Footer = ({ report }: { report: any[] }) => {
       </div>
       
       <div className="flex gap-4 items-center">
-        <span>Top Aces:</span>
-        {topAces.length > 0 ? topAces.map(ace => (
-          <span key={ace.id} className="bg-cyber-ace/20 text-cyber-ace px-2 py-0.5 rounded border border-cyber-ace/30">
-            {ace.name} ({ace.hours}h)
-          </span>
-        )) : <span className="text-gray-600 italic">None detected</span>}
+        <span>DT Aces:</span>
+        <div className="flex gap-2">
+          {dtAces.length > 0 ? dtAces.map(ace => (
+            <span key={ace.id} className="text-cyber-dt border border-cyber-dt/30 px-2 rounded">
+              {ace.name}
+            </span>
+          )) : <span className="text-gray-700">-</span>}
+        </div>
+        <div className="h-3 w-px bg-cyber-border mx-1"></div>
+        <span>Bug Aces:</span>
+        <div className="flex gap-2">
+          {bugAces.length > 0 ? bugAces.map(ace => (
+            <span key={ace.id} className="text-cyber-bug border border-cyber-bug/30 px-2 rounded">
+              {ace.name}
+            </span>
+          )) : <span className="text-gray-700">-</span>}
+        </div>
       </div>
     </footer>
   );
