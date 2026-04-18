@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Trash2, Edit3, Calendar, Users, Award, Activity, FileText, Zap, UserPlus } from 'lucide-react';
 
-const API_URL = '/api';
+const API_URL = import.meta.env.VITE_API_URL ? `${import.meta.env.VITE_API_URL}/api` : '/api';
 
 interface Staff {
   id: number;

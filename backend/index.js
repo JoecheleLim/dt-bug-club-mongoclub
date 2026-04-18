@@ -5,7 +5,9 @@ const cors = require('cors');
 const path = require('path');
 
 const app = express();
-app.use(cors({ origin: '*' }));
+app.use(cors({
+  origin: 'https://dt-bug-club-frontend.vercel.app' 
+}));
 app.use(express.json());
 
 // Serve static files from the React app

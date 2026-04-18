@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Zap, Star, Trophy, Target, Calendar } from 'lucide-react';
 
-const API_URL = '/api';
+const API_URL = import.meta.env.VITE_API_URL ? `${import.meta.env.VITE_API_URL}/api` : '/api';
 
 interface ReportItem {
   id: number;

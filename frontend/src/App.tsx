@@ -113,12 +113,13 @@ const Footer = ({ report }: { report: any[] }) => {
 };
 
 function App() {
+  const API_URL = import.meta.env.VITE_API_URL || '';
   const [month, setMonth] = useState(new Date().toISOString().slice(0, 7));
   const [report, setReport] = useState<any[]>([]);
 
   const fetchGlobalData = async () => {
     try {
-      const res = await fetch(`/api/report/${month}`);
+      const res = await fetch(`${API_URL}/api/report/${month}`);
       const data = await res.json();
       setReport(data);
     } catch (e) {
