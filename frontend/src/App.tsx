@@ -83,7 +83,8 @@ const Header = ({ isConnected }: { isConnected: boolean }) => {
       </button>
     </div>
   </header>
-);
+  );
+};
 
 const Footer = ({ report }: { report: any[] }) => {
   const dtCommission = report.filter(s => s.club === 'DT').reduce((acc, s) => acc + (s.clubCut || 0), 0);
