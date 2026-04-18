@@ -1,0 +1,43 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-cyber-bg text-cyber-text font-mono antialiased;
+  }
+}
+
+.gemini-glow {
+  box-shadow: 0 0 15px rgba(88, 166, 255, 0.3);
+  border: 1px solid rgba(88, 166, 255, 0.5);
+}
+
+.terminal-scroll::-webkit-scrollbar {
+  width: 8px;
+}
+
+.terminal-scroll::-webkit-scrollbar-track {
+  @apply bg-cyber-bg;
+}
+
+.terminal-scroll::-webkit-scrollbar-thumb {
+  @apply bg-cyber-border rounded-full;
+}
+
+.terminal-scroll::-webkit-scrollbar-thumb:hover {
+  @apply bg-gray-600;
+}
+
+/* Cyber Month Picker Styles */
+.cyber-month-input {
+  @apply bg-transparent text-white font-bold font-mono text-sm cursor-pointer outline-none w-full h-full appearance-none;
+}
+
+.cyber-month-input::-webkit-calendar-picker-indicator {
+  @apply absolute inset-0 w-full h-full opacity-0 cursor-pointer;
+}
+
+.cyber-month-container {
+  @apply flex items-center gap-3 bg-cyber-card border border-cyber-border p-2 px-4 rounded-xl relative hover:border-cyber-primary/50 transition-all;
+}
