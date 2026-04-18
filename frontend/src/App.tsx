@@ -51,7 +51,7 @@ const SidebarLink = ({ to, icon, label }: { to: string, icon: React.ReactNode, l
   );
 };
 
-const Header = () => (
+const Header = ({ isConnected }: { isConnected: boolean }) => (
   <header className="h-14 bg-cyber-card border-b border-cyber-border flex items-center justify-between px-6">
     <div className="flex items-center gap-4">
       <div className="flex items-center gap-2 text-xs text-gray-500">
@@ -59,9 +59,9 @@ const Header = () => (
         <span>db_v1.sqlite</span>
       </div>
       <div className="h-4 w-px bg-cyber-border"></div>
-      <div className="flex items-center gap-2 text-xs text-green-500">
-        <div className="w-2 h-2 rounded-full bg-green-500"></div>
-        <span>Connected: Localhost:3001</span>
+      <div className={`flex items-center gap-2 text-xs ${isConnected ? 'text-green-500' : 'text-red-500'}`}>
+        <div className={`w-2 h-2 rounded-full ${isConnected ? 'bg-green-500 animate-pulse' : 'bg-red-500'}`}></div>
+        <span>{isConnected ? 'System Online: Port 3001' : 'System Offline: Check Backend'}</span>
       </div>
     </div>
     
@@ -128,14 +128,21 @@ const Footer = ({ report }: { report: any[] }) => {
 function App() {
   const [month, setMonth] = useState(new Date().toISOString().slice(0, 7));
   const [report, setReport] = useState<any[]>([]);
+  const [isConnected, setIsConnected] = useState(false);
 
   const fetchGlobalData = async () => {
     try {
       const res = await fetch(`/api/report/${month}`);
-      const data = await res.json();
-      setReport(data);
+      if (res.ok) {
+        const data = await res.json();
+        setReport(data);
+        setIsConnected(true);
+      } else {
+        setIsConnected(false);
+      }
     } catch (e) {
       console.error("Error fetching footer data", e);
+      setIsConnected(false);
     }
   };
 
@@ -149,7 +156,7 @@ function App() {
         <Sidebar />
         
         <div className="flex-1 flex flex-col min-w-0">
-          <Header />
+          <Header isConnected={isConnected} />
           
           <main className="flex-1 overflow-auto p-6">
             <Routes>
