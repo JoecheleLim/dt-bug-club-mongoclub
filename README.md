@@ -17,7 +17,7 @@ The system automatically applies the following combined-club rules:
 | **Gifts** | RM 12/unit | 10% | Total units received from customers |
 
 ### The "Ace" Status
-"Aces" are the top 3 staff members chosen based on the highest hours worked in the previous month.
+"Aces" are the top 3 staff members chosen based on the highest hours worked in the previous month across **the entire club** (DT and Bug combined).
 
 ---
 
@@ -29,29 +29,30 @@ If you want to run this project on your own machine, follow these steps:
 Make sure you have [Node.js](https://nodejs.org/) installed.
 
 ### 2. Setup
-Clone the repository and install the dependencies:
+Clone the repository and install the dependencies for both the frontend and backend:
 ```bash
 # Clone the repo
-git clone [https://github.com/JoecheleLim/dt-bug-club.git](https://github.com/JoecheleLim/dt-bug-club.git)
+git clone https://github.com/JoecheleLim/dt-bug-club.git
 
 # Enter the folder
 cd dt-bug-club
 
-# Install dependencies
-npm install
-````
-
-### 3. Start the Development Server
-Run the following command to launch the web interface:
-```bash
-npm run dev -- --port 3001
+# Install all dependencies (Root, Frontend, Backend)
+npm install && npm run install:all
 ```
 
-The site will be available at ```http://localhost:3001```.
+### 3. Start the Development Server
+Run the following command to launch **both** the frontend and the backend simultaneously:
+```bash
+npm run dev
+```
+
+The site will be available at ```http://localhost:5173```.
 
 ### 🛠️ Tech Stack
- - Frontend: React.js + Vite
- - Styling: CSS3
+ - Frontend: React.js (TypeScript) + Vite
+ - Backend: Express.js + SQLite
+ - Styling: Tailwind CSS
  - Dev Environment: Google Cloud Shell
  - AI Engine: Google Gemini CLI
 
