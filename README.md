@@ -49,6 +49,11 @@ npm run dev
 
 The site will be available at ```http://localhost:5173```.
 
+## 🟢 System Status Indicator
+The application includes a built-in health check in the top-right header:
+- **🟢 System Online**: The frontend is successfully connected to the backend API.
+- **🔴 System Offline**: The backend is unreachable. Make sure you ran `npm run dev` and check for errors in your terminal.
+
 ### 🛠️ Tech Stack
  - Frontend: React.js (TypeScript) + Vite
  - Backend: Express.js + SQLite
