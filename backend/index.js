@@ -166,10 +166,10 @@ app.get('/api/report/:month', async (req, res) => {
 });
 
 // Catch-all to serve React app
-app.use((req, res, next) => {
-  if (req.path.startsWith('/api')) return next();
-  res.sendFile(path.join(__dirname, '../frontend/dist/index.html'));
-});
+// app.use((req, res, next) => {
+//   if (req.path.startsWith('/api')) return next();
+//   res.sendFile(path.join(__dirname, '../frontend/dist/index.html'));
+// });
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, '0.0.0.0', () => {
