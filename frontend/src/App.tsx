@@ -138,7 +138,7 @@ function App() {
 
   const fetchGlobalData = async () => {
     try {
-      const res = await fetch(`/api/report/${month}`);
+      const res = await fetch(`${backendUrl}/api/report/${month}`);
       if (res.ok) {
         const data = await res.json();
         setReport(data);
@@ -205,6 +205,14 @@ function App() {
           <div className="mt-auto text-[10px] text-gray-600">
             v1.0.4-alpha // DT-BUG-ADMIN
           </div>
+        </div>
+      </div>
+    </Router>
+  );
+}
+
+export default App;
+v>
         </div>
       </div>
     </Router>

@@ -2,7 +2,9 @@ import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { Terminal as TerminalIcon, ChevronRight, Zap, Save } from 'lucide-react';
 
-const API_URL = '/api';
+import { backendUrl } from '../api';
+
+const API_URL = `${backendUrl}/api`;
 
 interface ReportItem {
   id: string;
