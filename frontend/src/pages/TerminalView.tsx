@@ -5,7 +5,7 @@ import { Terminal as TerminalIcon, ChevronRight, Zap, Save } from 'lucide-react'
 const API_URL = '/api';
 
 interface ReportItem {
-  id: number;
+  id: string;
   name: string;
   club: 'DT' | 'Bug';
   hours: number;

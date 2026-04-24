@@ -5,7 +5,7 @@ import { Zap, Star, Trophy, Target, Calendar } from 'lucide-react';
 const API_URL = '/api';
 
 interface ReportItem {
-  id: number;
+  id: string;
   name: string;
   club: 'DT' | 'Bug';
   hours: number;

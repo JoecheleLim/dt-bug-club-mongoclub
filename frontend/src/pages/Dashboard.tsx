@@ -5,7 +5,7 @@ import { Trash2, Edit3, Calendar, Users, Award, Activity, FileText, Zap, UserPlu
 const API_URL = '/api';
 
 interface Staff {
-  id: number;
+  id: string;
   name: string;
   club: 'DT' | 'Bug';
 }
@@ -30,7 +30,7 @@ const Dashboard = ({ month, setMonth }: Props) => {
   const [report, setReport] = useState<ReportItem[]>([]);
   const [newName, setNewName] = useState('');
   const [newClub, setNewClub] = useState<'DT' | 'Bug'>('DT');
-  const [editStaffId, setEditStaffId] = useState<number | null>(null);
+  const [editStaffId, setEditStaffId] = useState<string | null>(null);
   const [editHours, setEditHours] = useState(0);
   const [editGifts, setEditGifts] = useState(0);
   
@@ -66,7 +66,7 @@ const Dashboard = ({ month, setMonth }: Props) => {
     fetchReport();
   };
 
-  const deleteStaff = async (id: number) => {
+  const deleteStaff = async (id: string) => {
     if (window.confirm('Terminate staff record?')) {
       await axios.delete(`${API_URL}/staff/${id}`);
       fetchStaff();
@@ -231,7 +231,7 @@ const Dashboard = ({ month, setMonth }: Props) => {
   );
 };
 
-const ClubTable = ({ title, data, color, onEdit }: { title: string, data: ReportItem[], color: 'dt' | 'bug', onEdit: (id: number, h: number, g: number) => void }) => (
+const ClubTable = ({ title, data, color, onEdit }: { title: string, data: ReportItem[], color: 'dt' | 'bug', onEdit: (id: string, h: number, g: number) => void }) => (
   <div className="bg-cyber-card border border-cyber-border rounded-xl overflow-hidden shadow-xl h-fit">
     <div className={`p-4 border-b border-cyber-border bg-cyber-bg/20 flex items-center justify-between`}>
       <h3 className={`text-sm font-bold uppercase flex items-center gap-2 ${color === 'dt' ? 'text-cyber-dt' : 'text-cyber-bug'}`}>
