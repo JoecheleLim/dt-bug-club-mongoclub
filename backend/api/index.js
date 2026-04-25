@@ -1,3 +1,5 @@
+
+
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
@@ -8,8 +10,20 @@ const app = express();
 app.use(cors({ origin: '*' }));
 app.use(express.json());
 
+app.get('/', (req, res) => {
+  res.status(200).send("Bug Club Backend is Live!");
+});
+
+// Also add a route to check MongoDB
+app.get('/api/status', (req, res) => {
+  res.json({ 
+    status: 'online', 
+    database: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected' 
+  });
+});
+
 // Serve static files from the React app
-app.use(express.static(path.join(__dirname, '../frontend/dist')));
+app.use(express.static(path.join(__dirname, '../../frontend/dist')));
 
 // MongoDB Schemas
 const staffSchema = new mongoose.Schema({
@@ -168,10 +182,14 @@ app.get('/api/report/:month', async (req, res) => {
 // Catch-all to serve React app
 // app.use((req, res, next) => {
 //   if (req.path.startsWith('/api')) return next();
-//   res.sendFile(path.join(__dirname, '../frontend/dist/index.html'));
+//   res.sendFile(path.join(__dirname, '../../frontend/dist/index.html'));
 // });
 
 const PORT = process.env.PORT || 3001;
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`Server running on port ${PORT}`);
-});
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, '0.0.0.0', () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+}
+
+module.exports = app;
