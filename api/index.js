@@ -23,7 +23,7 @@ app.get('/api/status', (req, res) => {
 });
 
 // Serve static files from the React app
-app.use(express.static(path.join(__dirname, '../../frontend/dist')));
+app.use(express.static(path.join(__dirname, '../frontend/dist')));
 
 // MongoDB Schemas
 const staffSchema = new mongoose.Schema({
@@ -182,7 +182,7 @@ app.get('/api/report/:month', async (req, res) => {
 // Catch-all to serve React app
 // app.use((req, res, next) => {
 //   if (req.path.startsWith('/api')) return next();
-//   res.sendFile(path.join(__dirname, '../../frontend/dist/index.html'));
+//   res.sendFile(path.join(__dirname, '../frontend/dist/index.html'));
 // });
 
 const PORT = process.env.PORT || 3001;
