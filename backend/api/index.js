@@ -65,20 +65,40 @@ const bugSchema = new mongoose.Schema({
 
 const Bug = mongoose.model('Bug', bugSchema);
 
-// MongoDB Connection
+// MongoDB Connection Logic for Serverless
 const MONGODB_URI = process.env.MONGODB_URI;
 
 if (!MONGODB_URI) {
   console.error('CRITICAL: MONGODB_URI is not defined in environment variables.');
-  process.exit(1);
 }
 
-mongoose.connect(MONGODB_URI)
-  .then(() => console.log('Connected to MongoDB Atlas'))
-  .catch(err => {
-    console.error('MongoDB connection error:', err);
-    process.exit(1);
-  });
+let cachedDb = null;
+
+async function connectToDatabase() {
+  if (cachedDb && mongoose.connection.readyState === 1) {
+    return cachedDb;
+  }
+
+  console.log('=> Connecting to MongoDB Atlas...');
+  const db = await mongoose.connect(MONGODB_URI);
+  cachedDb = db;
+  return db;
+}
+
+// Middleware to ensure DB connection
+app.use(async (req, res, next) => {
+  if (req.path.startsWith('/api') || req.path === '/test-db') {
+    try {
+      await connectToDatabase();
+      next();
+    } catch (err) {
+      console.error('Database connection error in middleware:', err);
+      return res.status(500).json({ error: 'Internal Database Error' });
+    }
+  } else {
+    next();
+  }
+});
 
 app.get('/api/health', (req, res) => res.json({ status: 'ok', db: 'mongodb' }));
 
