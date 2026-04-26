@@ -14,6 +14,17 @@ app.get('/', (req, res) => {
   res.status(200).send("Bug Club Backend is Live!");
 });
 
+app.get('/test-db', async (req, res) => {
+  try {
+    // This checks if you can actually talk to your MongoDB Atlas cluster
+    const state = mongoose.connection.readyState; 
+    const status = state === 1 ? "Connected to MongoDB" : "Not Connected";
+    res.send(`Server Status: Live | Database: ${status}`);
+  } catch (err) {
+    res.status(500).send("Database connection error");
+  }
+});
+
 // Also add a route to check MongoDB
 app.get('/api/status', (req, res) => {
   res.json({ 
@@ -41,6 +52,15 @@ const recordSchema = new mongoose.Schema({
 const Staff = mongoose.model('Staff', staffSchema);
 const Record = mongoose.model('Record', recordSchema);
 
+const bugSchema = new mongoose.Schema({
+  title: { type: String, required: true },
+  description: String,
+  status: { type: String, default: 'open' },
+  createdAt: { type: Date, default: Date.now }
+});
+
+const Bug = mongoose.model('Bug', bugSchema);
+
 // MongoDB Connection
 const MONGODB_URI = process.env.MONGODB_URI;
 
@@ -57,6 +77,26 @@ mongoose.connect(MONGODB_URI)
   });
 
 app.get('/api/health', (req, res) => res.json({ status: 'ok', db: 'mongodb' }));
+
+// Bug endpoints
+app.get('/api/bugs', async (req, res) => {
+  try {
+    const bugs = await Bug.find().sort({ createdAt: -1 });
+    res.json(bugs);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.post('/api/bugs', async (req, res) => {
+  try {
+    const bug = new Bug(req.body);
+    await bug.save();
+    res.json(bug);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
 // Staff endpoints
 app.get('/api/staff', async (req, res) => {
