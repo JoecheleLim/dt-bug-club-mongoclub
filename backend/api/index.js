@@ -8,7 +8,7 @@ const mongoose = require('mongoose');
 
 const app = express();
 app.use(cors({
-  origin: ["https://dt-bug-club-mongoclub-frontend.vercel.app", "http://localhost:3000", "http://localhost:5173"],
+  origin: ["https://dt-bug-club.vercel.app", "http://localhost:3000", "http://localhost:5173"],
   methods: ["GET", "POST", "DELETE", "OPTIONS"],
   credentials: true
 }));
