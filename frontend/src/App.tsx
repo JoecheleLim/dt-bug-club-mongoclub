@@ -4,7 +4,7 @@ import { Activity, Shield, Info, Zap, Database, Terminal as TerminalIcon, Layout
 import Dashboard from './pages/Dashboard';
 import TerminalView from './pages/TerminalView';
 import AceDashboard from './pages/AceDashboard';
-import { backendUrl } from './api';
+// import { backendUrl } from './api';
 
 const Sidebar = () => (
   <aside className="w-64 bg-cyber-card border-r border-cyber-border h-screen flex flex-col p-4">
