@@ -14,29 +14,6 @@ app.use(cors({
 }));
 app.use(express.json());
 
-app.get('/', (req, res) => {
-  res.status(200).send("Bug Club Backend is Live!");
-});
-
-app.get('/test-db', async (req, res) => {
-  try {
-    // This checks if you can actually talk to your MongoDB Atlas cluster
-    const state = mongoose.connection.readyState; 
-    const status = state === 1 ? "Connected to MongoDB" : "Not Connected";
-    res.send(`Server Status: Live | Database: ${status}`);
-  } catch (err) {
-    res.status(500).send("Database connection error");
-  }
-});
-
-// Also add a route to check MongoDB
-app.get('/api/status', (req, res) => {
-  res.json({ 
-    status: 'online', 
-    database: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected' 
-  });
-});
-
 // Serve static files from the React app
 app.use(express.static(path.join(__dirname, '../../frontend/dist')));
 
@@ -66,6 +43,8 @@ const bugSchema = new mongoose.Schema({
 const Bug = mongoose.model('Bug', bugSchema);
 
 // MongoDB Connection Logic for Serverless
+console.log("Checking URI:", process.env.MONGODB_URI ? "Variable Detected" : "VARIABLE MISSING");
+
 const MONGODB_URI = process.env.MONGODB_URI;
 
 if (!MONGODB_URI) {
@@ -80,9 +59,15 @@ async function connectToDatabase() {
   }
 
   console.log('=> Connecting to MongoDB Atlas...');
-  const db = await mongoose.connect(MONGODB_URI);
-  cachedDb = db;
-  return db;
+  try {
+    const db = await mongoose.connect(process.env.MONGODB_URI || "");
+    console.log("MongoDB Connected Successfully");
+    cachedDb = db;
+    return db;
+  } catch (err) {
+    console.error("Database connection error:", err.message);
+    throw err;
+  }
 }
 
 // Middleware to ensure DB connection
@@ -97,6 +82,38 @@ app.use(async (req, res, next) => {
     }
   } else {
     next();
+  }
+});
+
+app.get('/', (req, res) => {
+  res.status(200).send("Bug Club Backend is Live!");
+});
+
+app.get('/test-db', async (req, res) => {
+  try {
+    // This checks if you can actually talk to your MongoDB Atlas cluster
+    const state = mongoose.connection.readyState; 
+    const status = state === 1 ? "Connected to MongoDB" : "Not Connected";
+    res.send(`Server Status: Live | Database: ${status}`);
+  } catch (err) {
+    res.status(500).send("Database connection error");
+  }
+});
+
+// Also add a route to check MongoDB
+app.get('/api/status', async (req, res) => {
+  try {
+    // Force a connection attempt if not connected
+    if (mongoose.connection.readyState !== 1) {
+      await mongoose.connect(process.env.MONGODB_URI);
+    }
+    
+    res.json({ 
+      status: "online", 
+      database: mongoose.connection.readyState === 1 ? "connected" : "disconnected" 
+    });
+  } catch (err) {
+    res.json({ status: "online", database: "error", message: err.message });
   }
 });
 
