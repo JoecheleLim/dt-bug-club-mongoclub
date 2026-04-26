@@ -213,11 +213,3 @@ function App() {
 }
 
 export default App;
-v>
-        </div>
-      </div>
-    </Router>
-  );
-}
-
-export default App;
