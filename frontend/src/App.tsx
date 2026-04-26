@@ -139,16 +139,19 @@ function App() {
 
   const fetchGlobalData = async () => {
     try {
-      const res = await fetch(`${backendUrl}/api/report/${month}`);
+      // HARDCODE the URL just for this test
+      const res = await fetch(`https://dt-bug-club-mongodb.vercel.app/api/report/${month}`);
       if (res.ok) {
+        console.log("SUCCESS: Backend is reachable!");
         const data = await res.json();
         setReport(data);
         setIsConnected(true);
       } else {
+        console.error("Backend returned an error:", res.status);
         setIsConnected(false);
       }
     } catch (e) {
-      console.error("Error fetching footer data", e);
+      console.error("FETCH FAILED: Check CORS or Network", e);
       setIsConnected(false);
     }
   };
